@@ -8,7 +8,8 @@ jobs:
       matrix:
         boost_version: [1.74.0]
         abi: [armeabi-v7a,arm64-v8a,x86,x86_64]
-        os: [ubuntu-latest,macos-latest]
+        os: [macos-latest]
+        #os: [ubuntu-latest,macos-latest]
         include:
           # includes a new variable of 'variation' for each host os
           - os: ubuntu-latest
@@ -42,13 +43,13 @@ jobs:
         echo "::set-env name=NDK_ROOT::$NDK_ROOT"
       if: matrix.os == 'macos-latest'
     - name: Build Boost for Android on ${{ matrix.variation }}
-      run: CXXFLAGS="-std=c++14" ./build-android.sh --boost=${{ matrix.boost_version }} --arch=${{ matrix.abi }} --with-libraries=filesystem,system,serialization "${NDK_ROOT}"
+      run: CXXFLAGS="-std=c++14" ./build-android.sh --boost=${{ matrix.boost_version }} --arch=${{ matrix.abi }} --with-libraries=serialization "${NDK_ROOT}"
     - name: Prepare Binaries
       run: |
         set -x
         mv build/out/* ${GITHUB_WORKSPACE}/bins/${{ matrix.variation }}/ || true
         # Get rid of boost include directory cause it takes a long time to pack and upload (~20 min)
-        find ${GITHUB_WORKSPACE}/bins/${{ matrix.variation }} -type d -name "include" -exec rm -rf {} +
+        # find ${GITHUB_WORKSPACE}/bins/${{ matrix.variation }} -type d -name "include" -exec rm -rf {} +
         ls -alFR ${GITHUB_WORKSPACE}/bins
       if: always()
     - name: Upload Binaries
