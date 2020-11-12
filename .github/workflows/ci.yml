@@ -12,8 +12,8 @@ jobs:
         #os: [ubuntu-latest,macos-latest]
         include:
           # includes a new variable of 'variation' for each host os
-          - os: ubuntu-latest
-            variation: linux
+#           - os: ubuntu-latest
+#             variation: linux
           - os: macos-latest
             variation: mac
       fail-fast: false
@@ -49,7 +49,7 @@ jobs:
         set -x
         mv build/out/* ${GITHUB_WORKSPACE}/bins/${{ matrix.variation }}/ || true
         # Get rid of boost include directory cause it takes a long time to pack and upload (~20 min)
-        # find ${GITHUB_WORKSPACE}/bins/${{ matrix.variation }} -type d -name "include" -exec rm -rf {} +
+        find ${GITHUB_WORKSPACE}/bins/${{ matrix.variation }} -type d -name "include" -exec rm -rf {} +
         ls -alFR ${GITHUB_WORKSPACE}/bins
       if: always()
     - name: Upload Binaries
